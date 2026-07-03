@@ -8,7 +8,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     name                 = "system"
     vm_size              = var.vm_size
     vnet_subnet_id       = var.subnet_id
-    auto_scaling_enabled = true
+    enable_auto_scaling = true
     min_count            = var.min_count
     max_count            = var.max_count
   }

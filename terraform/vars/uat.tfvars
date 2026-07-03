@@ -4,7 +4,7 @@ environment     = "uat"
 project_name    = "delphi"
 resource_prefix = "delphi-uat-uaen"
 
-aks_vm_size   = "Standard_B2s"
+aks_vm_size   = "Standard_B2s_v2"
 aks_min_count = 2
 aks_max_count = 3
 

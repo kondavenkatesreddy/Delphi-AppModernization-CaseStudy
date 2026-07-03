@@ -65,11 +65,6 @@ steps:
       export ARM_CLIENT_SECRET=$servicePrincipalKey
       export ARM_TENANT_ID=$tenantId
       export ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
-      # Debug: show the outputs.tf file the agent will use
-      echo "--- Debug: list terraform directory ---"
-      ls -la $(workingDirectory) || true
-      echo "--- Debug: terraform/outputs.tf ---"
-      cat $(workingDirectory)/outputs.tf || true
       terraform plan -var-file=$(tfVarFile) -out=tfplan
 
 - task: AzureCLI@2

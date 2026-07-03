@@ -8,7 +8,7 @@ aks_vm_size   = "Standard_D2s_v5"
 aks_min_count = 2
 aks_max_count = 5
 
-acr_sku         = "Premium"
+acr_sku         = "Standard"
 app_service_sku = "P1v3"
 app_config_sku  = "standard"
 

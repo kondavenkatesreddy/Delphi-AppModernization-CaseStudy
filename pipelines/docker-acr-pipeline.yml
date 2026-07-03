@@ -13,7 +13,7 @@ variables:
   dockerfilePath: 'sample-app/Delphi.SampleApi/Dockerfile'
   buildContext: 'sample-app/Delphi.SampleApi'
   tag: '$(Build.BuildId)'
-  acrServiceConnection: 'delphi-acr-sc'
+  acrServiceConnection: 'Delphi-Azure-connection'
 
 pool:
   vmImage: ubuntu-latest

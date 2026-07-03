@@ -12,8 +12,8 @@ pool:
 
 variables:
   workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-  serviceConnection: 'delphi-azure-sc'
-  tfVarFile: 'vars/dev.tfvars'
+  serviceConnection: 'Delphi-Azure-connection'
+  tfVarFile: 'vars/prod.tfvars'  # use vars/dev.tfvars or vars/uat.tfvars for lower environments
 
 steps:
 - checkout: self

@@ -6,7 +6,7 @@ metadata:
   labels:
     app: sample-microservice
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: sample-microservice
@@ -19,7 +19,21 @@ spec:
     metadata:
       labels:
         app: sample-microservice
+        app.kubernetes.io/name: sample-microservice
+        app.kubernetes.io/component: api
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - sample-microservice
       containers:
         - name: sample-microservice
           image: acrdelphidevuaen001.azurecr.io/sample-microservice:latest
@@ -30,26 +44,30 @@ spec:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Production"
             - name: KEY_VAULT_URI
-              value: "https://kv-delphi-dev-uaen-001.vault.azure.net/"
+              value: "https://kv-delphi-prod-uaen-001.vault.azure.net/"
           resources:
             requests:
-              cpu: "100m"
-              memory: "128Mi"
+              cpu: "250m"
+              memory: "256Mi"
             limits:
-              cpu: "500m"
-              memory: "512Mi"
+              cpu: "1000m"
+              memory: "1Gi"
           readinessProbe:
             httpGet:
               path: /health
               port: 8080
             initialDelaySeconds: 15
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           livenessProbe:
             httpGet:
               path: /health
               port: 8080
             initialDelaySeconds: 30
             periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
           volumeMounts:
             - name: app-storage
               mountPath: /app/data

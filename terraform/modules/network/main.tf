@@ -6,11 +6,30 @@ resource "azurerm_virtual_network" "this" {
   tags                = var.tags
 }
 
+resource "azurerm_network_security_group" "aks" {
+  name                = "${var.vnet_name}-aks-nsg"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  tags                = var.tags
+}
+
+resource "azurerm_network_security_group" "app_service" {
+  name                = "${var.vnet_name}-appservice-nsg"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  tags                = var.tags
+}
+
 resource "azurerm_subnet" "aks" {
   name                 = "snet-aks"
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.this.name
   address_prefixes     = var.aks_subnet_prefix
+}
+
+resource "azurerm_subnet_network_security_group_association" "aks" {
+  subnet_id                 = azurerm_subnet.aks.id
+  network_security_group_id = azurerm_network_security_group.aks.id
 }
 
 resource "azurerm_subnet" "app_service" {
@@ -26,4 +45,9 @@ resource "azurerm_subnet" "app_service" {
       actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
     }
   }
+}
+
+resource "azurerm_subnet_network_security_group_association" "app_service" {
+  subnet_id                 = azurerm_subnet.app_service.id
+  network_security_group_id = azurerm_network_security_group.app_service.id
 }

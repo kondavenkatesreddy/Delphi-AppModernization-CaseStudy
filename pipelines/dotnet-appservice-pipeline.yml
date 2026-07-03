@@ -9,8 +9,8 @@ trigger:
 
 variables:
   buildConfiguration: 'Release'
-  webAppName: 'app-delphi-dev-uaen-001'         # match your environment
-  azureServiceConnection: 'delphi-azure-sc'
+  webAppName: 'app-delphi-prod-uaen-001'         # ensure this matches the production App Service name in Terraform
+  azureServiceConnection: 'Delphi-Azure-connection'
   projectPath: 'sample-app/Delphi.SampleApi/Delphi.SampleApi.csproj'
 
 stages:

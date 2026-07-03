@@ -83,6 +83,18 @@ module "app_service" {
   tags                = var.tags
 }
 
+module "monitoring" {
+  source                   = "./modules/monitoring"
+  name                     = "mon-${var.resource_prefix}-001"
+  workspace_name           = "law-${var.resource_prefix}-001"
+  app_insights_name        = "appi-${var.resource_prefix}-001"
+  resource_group_name      = module.resource_group.name
+  location                 = module.resource_group.location
+  aks_resource_id          = module.aks.id
+  app_service_resource_id  = module.app_service.web_app_id
+  tags                     = var.tags
+}
+
 # Web App managed identity can read secrets from Key Vault
 resource "azurerm_role_assignment" "webapp_kv_secrets" {
   scope                = module.key_vault.id

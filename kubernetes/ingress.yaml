@@ -5,10 +5,15 @@ metadata:
   namespace: default
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - sample-microservice.prod.delphi-apps.example.com
+      secretName: sample-microservice-tls
   rules:
-    - host: sample-microservice.delphi-demo.local
+    - host: sample-microservice.prod.delphi-apps.example.com
       http:
         paths:
           - path: /

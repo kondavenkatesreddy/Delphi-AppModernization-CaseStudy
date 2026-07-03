@@ -34,6 +34,7 @@ module "app_configuration" {
   name                = local.app_config_name
   resource_group_name = module.resource_group.name
   location            = module.resource_group.location
+  sku                 = var.app_config_sku
   tags                = var.tags
 }
 

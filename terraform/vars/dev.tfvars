@@ -7,8 +7,8 @@ aks_vm_size   = "Standard_B2s"
 aks_min_count = 1
 aks_max_count = 3
 
-acr_sku         = "Standard"
-app_service_sku = "B1"
+acr_sku         = "Basic"
+app_config_sku  = "free"
 
 tags = {
   Project     = "Delphi App Modernization"

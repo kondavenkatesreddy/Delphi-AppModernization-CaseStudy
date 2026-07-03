@@ -10,6 +10,7 @@ aks_max_count = 5
 
 acr_sku         = "Premium"
 app_service_sku = "P1v3"
+app_config_sku  = "standard"
 
 tags = {
   Project     = "Delphi App Modernization"

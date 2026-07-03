@@ -37,3 +37,8 @@ variable "app_service_sku" {
 variable "tags" {
   type = map(string)
 }
+
+variable "app_config_sku" {
+  type    = string
+  default = "free"
+}

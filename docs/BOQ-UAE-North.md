@@ -15,7 +15,7 @@ compute by roughly 30-40% for steady workloads.
 | 1 | AKS control plane | Standard tier (uptime SLA) | 1 | ~73 |
 | 2 | AKS worker nodes | Standard_B2s (dev) / D2s_v5 (prod) | 2 | ~60 (dev) / ~210 (prod) |
 | 3 | AKS node disks + load balancer | StandardSSD + Standard LB | - | ~30 |
-| 4 | Azure Container Registry | Standard (dev) / Premium (prod) | 1 | ~20 / ~50 |
+| 4 | Azure Container Registry | Standard (dev) / standard (prod) | 1 | ~20 / ~50 |
 | 5 | Azure Key Vault | Standard, RBAC | 1 | ~5 |
 | 6 | App Service Plan | B1 (dev) / P1v3 (prod) | 1 | ~13 / ~146 |
 | 7 | App Configuration | Standard | 1 | ~36 |

@@ -1,0 +1,20 @@
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+.terraformrc
+terraform.rc
+
+# .NET
+**/bin/
+**/obj/
+*.user
+
+# IDE / OS
+.vs/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,79 @@
+# .NET build and deploy to Azure App Service
+# Build stage produces a zip artifact; Deploy stage pushes it to the Web App.
+
+trigger:
+  branches:
+    include: [ main ]
+  paths:
+    include: [ sample-app/* ]
+
+variables:
+  buildConfiguration: 'Release'
+  webAppName: 'app-delphi-dev-uaen-001'         # match your environment
+  azureServiceConnection: 'delphi-azure-sc'
+  projectPath: 'sample-app/Delphi.SampleApi/Delphi.SampleApi.csproj'
+
+stages:
+- stage: Build
+  displayName: Build .NET App
+  jobs:
+  - job: build
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - checkout: self
+
+    - task: UseDotNet@2
+      displayName: Install .NET 8 SDK
+      inputs:
+        packageType: sdk
+        version: '8.x'
+
+    - task: DotNetCoreCLI@2
+      displayName: Restore
+      inputs:
+        command: restore
+        projects: '$(projectPath)'
+
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        command: build
+        projects: '$(projectPath)'
+        arguments: '--configuration $(buildConfiguration) --no-restore'
+
+    - task: DotNetCoreCLI@2
+      displayName: Publish
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: '$(projectPath)'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) --no-build'
+        zipAfterPublish: true
+
+    - publish: '$(Build.ArtifactStagingDirectory)'
+      artifact: drop
+
+- stage: Deploy
+  displayName: Deploy to App Service
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - deployment: deploy
+    pool:
+      vmImage: ubuntu-latest
+    environment: 'delphi-dev'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: drop
+
+          - task: AzureWebApp@1
+            displayName: Deploy Web App
+            inputs:
+              azureSubscription: '$(azureServiceConnection)'
+              appType: webAppLinux
+              appName: '$(webAppName)'
+              package: '$(Pipeline.Workspace)/drop/**/*.zip'

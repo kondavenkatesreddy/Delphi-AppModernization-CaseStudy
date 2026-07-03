@@ -1,0 +1,73 @@
+# Terraform infrastructure pipeline for Azure DevOps.
+# Runs init/validate/plan, then apply.
+
+trigger:
+  branches:
+    include: [ main ]
+  paths:
+    include: [ terraform/* ]
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+  serviceConnection: 'delphi-azure-sc'
+  tfVarFile: 'vars/dev.tfvars'
+
+steps:
+- checkout: self
+
+- task: TerraformInstaller@1
+  displayName: Install Terraform
+  inputs:
+    terraformVersion: latest
+
+- task: AzureCLI@2
+  displayName: Terraform Init & Validate
+  inputs:
+    azureSubscription: '$(serviceConnection)'
+    scriptType: bash
+    scriptLocation: inlineScript
+    workingDirectory: $(workingDirectory)
+    addSpnToEnvironment: true
+    inlineScript: |
+      set -e
+      export ARM_CLIENT_ID=$servicePrincipalId
+      export ARM_CLIENT_SECRET=$servicePrincipalKey
+      export ARM_TENANT_ID=$tenantId
+      export ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+      terraform init
+      terraform validate
+
+- task: AzureCLI@2
+  displayName: Terraform Plan
+  inputs:
+    azureSubscription: '$(serviceConnection)'
+    scriptType: bash
+    scriptLocation: inlineScript
+    workingDirectory: $(workingDirectory)
+    addSpnToEnvironment: true
+    inlineScript: |
+      set -e
+      export ARM_CLIENT_ID=$servicePrincipalId
+      export ARM_CLIENT_SECRET=$servicePrincipalKey
+      export ARM_TENANT_ID=$tenantId
+      export ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+      terraform plan -var-file=$(tfVarFile) -out=tfplan
+
+- task: AzureCLI@2
+  displayName: Terraform Apply
+  inputs:
+    azureSubscription: '$(serviceConnection)'
+    scriptType: bash
+    scriptLocation: inlineScript
+    workingDirectory: $(workingDirectory)
+    addSpnToEnvironment: true
+    inlineScript: |
+      set -e
+      export ARM_CLIENT_ID=$servicePrincipalId
+      export ARM_CLIENT_SECRET=$servicePrincipalKey
+      export ARM_TENANT_ID=$tenantId
+      export ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+      terraform apply -auto-approve tfplan

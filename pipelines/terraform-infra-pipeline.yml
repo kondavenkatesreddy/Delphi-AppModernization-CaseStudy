@@ -18,10 +18,21 @@ variables:
 steps:
 - checkout: self
 
-- task: TerraformInstaller@1
+- task: Bash@3
   displayName: Install Terraform
   inputs:
-    terraformVersion: latest
+    targetType: 'inline'
+    script: |
+      set -e
+      if ! command -v terraform >/dev/null 2>&1; then
+        sudo apt-get update
+        sudo apt-get install -y unzip
+        curl -fsSL https://releases.hashicorp.com/terraform/1.7.14/terraform_1.7.14_linux_amd64.zip -o terraform.zip
+        unzip terraform.zip
+        sudo mv terraform /usr/local/bin/
+        rm terraform.zip
+      fi
+      terraform version
 
 - task: AzureCLI@2
   displayName: Terraform Init & Validate

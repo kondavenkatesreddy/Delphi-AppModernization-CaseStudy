@@ -46,13 +46,41 @@ automatically on a push to "main" that touches the relevant paths.
 
 | Pipeline | File | Purpose | Trigger |
 |----------|------|---------|---------|
-| Terraform infra | `terraform-infra-pipeline.yml` | init / validate / plan / apply | push to `main` under `terraform/*` |
-| .NET to App Service | `dotnet-appservice-pipeline.yml` | build .NET 8 app, deploy to App Service | push to `main` under `sample-app/*` |
-| Image to ACR | `docker-acr-pipeline.yml` | build container image, push to ACR | push to `main` under `sample-app/*` |
+| Terraform infra | `pipelines/terraform-infra-pipeline.yml` | init / validate / plan / apply | push to `main` under `terraform/*` |
+| .NET to App Service | `pipelines/dotnet-appservice-pipeline.yml` | build .NET 8 app, deploy to App Service | push to `main` under `sample-app/*` |
+| Image to ACR | `pipelines/docker-acr-pipeline.yml` | build container image, push to ACR | push to `main` under `sample-app/*` |
 
 Before the first run, create in Azure DevOps:
 - A **service connection** to the Azure subscription named "delphi-azure-sc"
   (and "delphi-acr-sc" for the ACR pipeline).
+
+To create the Azure DevOps pipelines from this repository, use the YAML paths below:
+
+```bash
+az pipelines create --name "Terraform Infra Pipeline" \
+  --repository "kondavenkatesreddy/Delphi-AppModernization-CaseStudy" \
+  --branch main \
+  --repository-type github \
+  --yml-path "pipelines/terraform-infra-pipeline.yml" \
+  --service-connection "Delphi-Github-connection" \
+  --skip-first-run true
+
+az pipelines create --name "Docker ACR Pipeline" \
+  --repository "kondavenkatesreddy/Delphi-AppModernization-CaseStudy" \
+  --branch main \
+  --repository-type github \
+  --yml-path "pipelines/docker-acr-pipeline.yml" \
+  --service-connection "Delphi-Github-connection" \
+  --skip-first-run true
+
+az pipelines create --name "Dotnet AppService Pipeline" \
+  --repository "kondavenkatesreddy/Delphi-AppModernization-CaseStudy" \
+  --branch main \
+  --repository-type github \
+  --yml-path "pipelines/dotnet-appservice-pipeline.yml" \
+  --service-connection "Delphi-Github-connection" \
+  --skip-first-run true
+```
 
 Trigger options:
 

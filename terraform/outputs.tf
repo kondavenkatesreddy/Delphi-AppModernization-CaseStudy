@@ -34,4 +34,5 @@ output "application_insights_name" {
 }
 output "application_insights_instrumentation_key" {
   value = module.monitoring.application_insights_instrumentation_key
+  sensitive = true
 }
